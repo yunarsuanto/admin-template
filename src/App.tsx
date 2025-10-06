@@ -11,15 +11,12 @@ const App: React.FC = () => {
   const { token, isAuthenticated } = useAppSelector((state) => state.auth)
   const dispatch = useAppDispatch()
   useEffect(() => {
-    console.log('---- isAuthenticated')
-    console.log(isAuthenticated)
-    console.log('---- isAuthenticated')
     if (!token) {
       dispatch(getToken())
     } else {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }
-  }, [token, dispatch, isAuthenticated]);
+  }, [token, dispatch]);
 
   return (
     <Router>
