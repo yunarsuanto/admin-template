@@ -1,15 +1,10 @@
 import apiClient from "./client";
 import { LoginSchema } from "../schemas/login.schema";
-
-// Asumsi respons API memiliki struktur ini
-interface LoginResponse {
-  token: string;
-  // tambahkan properti lain jika ada, misal: user: User
-}
+import { AuthResponse } from "../types/general/AuthTypes";
 
 // Fungsi untuk login user
-export const login = async (credentials: LoginSchema): Promise<LoginResponse> => {
-  const response = await apiClient.post<LoginResponse>(
+export const login = async (credentials: LoginSchema): Promise<AuthResponse> => {
+  const response = await apiClient.post<AuthResponse>(
     'general_auth.GeneralAuthHandler/Login', 
     credentials
   );

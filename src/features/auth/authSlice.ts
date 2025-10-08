@@ -1,20 +1,24 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { AuthState } from './authTypes';
 import { login } from '../../api/auth.api';
 import { LoginSchema } from '../../schemas/login.schema';
+import { AuthResponse, AuthState } from '../../types/general/AuthTypes';
 
-// Definisikan async thunk untuk login
-export const loginUser = createAsyncThunk(
+export const loginUser = createAsyncThunk<
+  AuthResponse,
+  LoginSchema,
+  { rejectValue: string }
+>(
   'auth/login',
-  async (credentials: LoginSchema, { rejectWithValue }) => {
+  async (credentials, { rejectWithValue }) => {
     try {
-      const response = await login(credentials);
-      return response.token;
+      const response = await login(credentials)
+      console.log('Login response:', response)
+      return response
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Login Gagal');
+      return rejectWithValue(error.response?.data?.message || 'Login Gagal')
     }
   }
-);
+)
 
 const initialState: AuthState = {
   token: null,
@@ -40,10 +44,10 @@ const authSlice = createSlice({
         state.loading = 'pending';
         state.error = null;
       })
-      .addCase(loginUser.fulfilled, (state, action: PayloadAction<string>) => {
+      .addCase(loginUser.fulfilled, (state, action: PayloadAction<AuthResponse>) => {
         state.loading = 'succeeded';
         state.isAuthenticated = true;
-        state.token = action.payload;
+        state.token = action.payload.data.access_token;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = 'failed';
